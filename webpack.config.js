@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-11-16 16:14:14
- * @LastEditors: your name
+ * @LastEditTime: 2020-11-24 10:52:43
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/webpack.config.js
  */
@@ -10,11 +10,14 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/main.js",
+  entry: "./src/plugins/index.js",
   output: {
     path: path.resolve(__dirname, "./dist"),
     publicPath: "/dist/",
-    filename: "build.js"
+    filename: "week-calendar.min.js",
+    library: "vue-calendar-week",
+    libraryTarget: "umd",
+    umdNamedDefine: true, 
   },
   module: {
     rules: [

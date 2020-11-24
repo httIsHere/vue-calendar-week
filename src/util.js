@@ -1,7 +1,7 @@
 /*
  * @Author: httishere
  * @Date: 2020-11-17 16:50:48
- * @LastEditTime: 2020-11-18 10:49:26
+ * @LastEditTime: 2020-11-24 09:56:25
  * @LastEditors: Please set LastEditors
  * @Description: 工具方法
  * @FilePath: /vue-calendar-week/src/util.js
@@ -16,8 +16,9 @@ const getDatesArray = (startDate, days = 0) => {
     let _start = new Date(startDate);
     for(let i = 0; i < days; i++) {
         let cur = _start.getTime() + 24 * 60 * 60 * 1000 * i;
+        let _day = new Date(cur).getDay();
         cur = formatDateOnlyDate(cur);
-        arr[i] = cur;
+        arr[i] = {date: cur, day: _day};
     }
     return arr;
 }

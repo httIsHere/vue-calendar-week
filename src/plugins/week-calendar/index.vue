@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-20 09:41:23
+ * @LastEditTime: 2020-11-24 10:43:09
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -12,30 +12,38 @@
       <tr class="calendar-table__tr calendar-table__th">
         <td
           class="calendar-table__td calendar-table__th-d calendar-table__td-null"
-        >
-          /
-        </td>
+        ></td>
         <td
           class="calendar-table__td calendar-table__th-d"
           v-for="item in columns"
-          :key="item"
+          :key="item.week"
         >
-          {{ item }}
+          <slot name="thead" :item="item">
+            {{ week_day[item.day] }}<br />{{ item.date }}
+          </slot>
         </td>
       </tr>
-      <tr class="calendar-table__tr" v-for="r of rows.length" :key="r">
-        <template v-if="(r - 1) % unitNum === 0">
+      <tr class="calendar-table__tr" v-for="(item, r) in rows" :key="r">
+        <template v-if="r % unitNum === 0">
           <td
             class="calendar-table__td calendar-table__td-span"
             :rowspan="unitNum"
-            v-html="rows[r - 1]"
-          ></td>
+          >
+            <span class="time">{{ rows[r] }}</span>
+            <span class="time time-bottom" v-if="needBottomTime && r === rows.length - unitNum">{{
+              endTime | formatHourWithInt
+            }}</span>
+          </td>
         </template>
         <!-- main -->
         <td
           :class="[
             'calendar-table__td',
-            (r - 1) % unitNum === 0 ? 'calendar-table__td-top' : '',
+            r % unitNum === 0 ? 'calendar-table__td-top' : '',
+            r === rows.length - 1 ? 'calendar-table__td-bottom' : '',
+            data_list && data_list[index][r] && data_list[index][r].is_passed
+              ? 'disabled'
+              : '',
             data_list &&
             data_list[index][r] &&
             data_list[index][r].has_record &&
@@ -71,7 +79,7 @@
                 data_list[index][r] &&
                 data_list[index][r].has_record &&
                 data_list[index][r].start_row === r
-              ? data_list[index][r].over_rows + 1
+              ? data_list[index][r].over_rows
               : false
           "
           v-for="(item, index) in columns"
@@ -81,12 +89,13 @@
           @mouseup="onTableMouseUp($event, r, index)"
           @contextmenu.prevent="onContextMenu($event, r, index)"
         >
-          <template
+          <div
+            class="item-default"
             v-if="select_cells.col === index && select_cells.start_row === r"
           >
             <!-- Selected time period -->
             {{ select_period }}
-          </template>
+          </div>
           <!-- Schedule main content -->
           <template
             v-if="
@@ -124,10 +133,16 @@ export default {
     startTime: {
       type: [String, Number],
       default: 0,
+      validator: function (value) {
+        return value % 1 === 0;
+      },
     }, // 日程表行开始时间
     endTime: {
       type: [String, Number],
       default: 24,
+      validator: function (value) {
+        return value % 1 === 0;
+      },
     }, // 日程表行结束时间
     unitTime: {
       type: [String, Number],
@@ -137,6 +152,23 @@ export default {
       type: Array,
       default: [],
     }, // 日程表
+    readonly: {
+      type: Boolean,
+      default: false,
+    }, // 日程表操作状态
+    disabledTime: {
+      type: Function,
+      default: function (time) {
+        // * Whether the current time period is disabled
+        let currentTime = new Date().getTime();
+        let start_time = new Date(time).getTime();
+        return currentTime >= start_time;
+      },
+    },
+    needBottomTime: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -145,7 +177,13 @@ export default {
       select_cells: { col: -1, start_row: -1, over_rows: 0, end_row: -1 },
       is_rowspan: false,
       data_list: null,
+      week_day: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
     };
+  },
+  filters: {
+    formatHourWithInt: function (hour) {
+      return hour >= 10 ? `${hour}:00` : `0${hour}:00`;
+    },
   },
   computed: {
     // ^ Description of table columns
@@ -167,21 +205,30 @@ export default {
     rows: function () {
       let _start = parseInt(this.startTime);
       let _end = parseInt(this.endTime);
-      let row_num = ((_end - _start) / this.unitTime) * this.unitNum;
-      let arr = new Array(row_num);
-      for (let i = 0; i < (_end - _start) / this.unitTime; i++) {
-        let start_hour = i * parseInt(this.unitTime) + _start;
-        arr[i * this.unitNum] = `${util.formatHourWithInt(start_hour)}`;
+      try {
+        if ((_end - _start) % this.unitTime !== 0) {
+          throw "Bad 'unit time";
+        } else {
+          let row_num = ((_end - _start) / this.unitTime) * this.unitNum;
+          let arr = new Array(row_num);
+          for (let i = 0; i < (_end - _start) / this.unitTime; i++) {
+            let start_hour = i * parseInt(this.unitTime) + _start;
+            arr[i * this.unitNum] = `${util.formatHourWithInt(start_hour)}`;
+          }
+          return arr;
+        }
+      } catch (e) {
+        console.error(e);
       }
-      return arr;
     },
     // ^ Selected time period
     select_period: function () {
       let { start_row, over_rows } = this.select_cells;
+      if (start_row < 0) return "";
       let _start = parseInt(this.startTime);
-      let start_hour = _start + Math.floor((start_row - 1) / this.unitNum);
+      let start_hour = _start + Math.floor(start_row / this.unitNum);
       let start_time =
-        start_hour * 60 + ((start_row - 1) % this.unitNum) * this.granularity;
+        start_hour * 60 + (start_row % this.unitNum) * this.granularity;
       let end_time = start_time + (over_rows + 1) * this.granularity;
       return `${util.formatTimeWithMinutes(
         start_time
@@ -192,11 +239,28 @@ export default {
     this.initRecordList(this.data);
   },
   methods: {
+    // TODO: Reset current selection
+    resetSelection() {
+      this.select_cells = { col: -1, start_row: -1, over_rows: 0, end_row: -1 };
+      this.is_mousedown = false;
+    },
     onTableMouseDown(e, row, col) {
+      if (this.readonly) return;
       // TODO: Whether there is a schedule
-      if (this.data_list[col][row] && this.data_list[col][row].has_record) {
+      if (
+        this.data_list[col][row] &&
+        (this.data_list[col][row].has_record ||
+          this.data_list[col][row].is_passed)
+      ) {
         return;
       }
+      // TODO: Is it currently selected
+      if (
+        col === this.select_cells.col &&
+        row >= this.select_cells.start_row &&
+        row <= this.select_cells.end_row
+      )
+        return;
       if (e.button !== 0) return;
       this.is_rowspan = false;
       if (this.is_mousedown) {
@@ -211,6 +275,11 @@ export default {
       }
     },
     onTableMouseOver(e, row, col) {
+      if (!this.is_mousedown) return;
+      if (this.data_list[col][row] && this.data_list[col][row].has_record) {
+        this.$toast("存在时间冲突，请重新安排");
+        return this.resetSelection();
+      }
       if (this.is_mousedown && this.select_cells.col === col) {
         // if (this.select_cells.start_row <= row) {
         let over_rows = row - this.select_cells.start_row;
@@ -223,9 +292,28 @@ export default {
         let over_rows = row - this.select_cells.start_row;
         // & Click a grid to select a time unit by default
         if (over_rows === 0) {
-          let start_row = Math.floor(row / this.unitNum) * this.unitNum + 1;
-          this.select_cells.start_row = start_row;
+          let start_row = Math.floor(row / this.unitNum) * this.unitNum;
           over_rows = this.unitNum - 1;
+          // ^ Determine whether there is a schedule in this range
+          let flag = false;
+          for (let i = start_row; i <= start_row + over_rows; i++) {
+            if (this.data_list[col][i] && this.data_list[col][i].has_record) {
+              flag = true;
+              this.$toast("存在时间冲突，请重新安排");
+              this.resetSelection();
+              break;
+            } else if (
+              this.data_list[col][i] &&
+              this.data_list[col][i].is_passed
+            ) {
+              flag = true;
+              this.$toast("该时间段不可安排日程，请重新安排");
+              this.resetSelection();
+              break;
+            }
+          }
+          if (flag) return;
+          this.select_cells.start_row = start_row;
         }
         // & Select up
         if (over_rows < 0) {
@@ -241,8 +329,11 @@ export default {
       }
     },
     // Right-click the cell
-    onContextMenu() {
+    onContextMenu(e, row, col) {
       // ^ Determine whether there is a schedule in the current cell
+      if (this.data_list[col][row] && this.data_list[col][row].has_record) {
+        this.$emit("on-contextmenu", row, this.data_list[col][row], e);
+      }
     },
     // ^ Initialize the record list
     initRecordList(list) {
@@ -251,12 +342,22 @@ export default {
         data_list = new Array();
       for (let i in _this.columns) {
         data_list[i] = new Array();
-        for (let j in _this.rows) {
-          data_list[i][j] = {};
+        for (let j = 0; j < _this.rows.length; j++) {
+          // * Whether the current time period is disabled
+          let _date = _this.columns[i].date;
+          let _start = util.formatTimeWithMinutes(
+            parseInt(_this.startTime) * 60 + j * _this.granularity
+          );
+          let is_passed = _this.disabledTime(`${_date} ${_start}`);
+          data_list[i][j] = {
+            is_passed,
+          };
         }
       }
       list.forEach((item) => {
         let date = item.date.replace(new RegExp("-", "gm"), "/");
+        let date_col = _this.columns.findIndex(col => col.date === date);
+        if (date_col < 0) return;
         let start_time =
           parseInt(item.start_time.split(":")[0]) * 60 +
           parseInt(item.start_time.split(":")[1]);
@@ -266,7 +367,6 @@ export default {
         let start_row =
           (start_time - parseInt(_this.startTime) * 60) / _this.granularity;
         let over_rows = (end_time - start_time) / _this.granularity;
-        let date_col = _this.columns.indexOf(date);
         let record_item = {
           has_record: true,
           is_before_created: true, // The generated schedule record, not added this time
@@ -277,17 +377,22 @@ export default {
           time: `${item.start_time}-${item.end_time}`,
         };
         _arr.push(record_item);
-        for (let j = start_row; j <= start_row + over_rows; j++) {
-          data_list[date_col][j] = record_item;
+        data_list[date_col][start_row] = record_item;
+        for (let j = start_row + 1; j < start_row + over_rows; j++) {
+          data_list[date_col][j] = { has_record: true };
         }
       });
-      console.log(data_list);
       _this.data_list = data_list;
+    },
+    // * Clear the current options and expose outward
+    cancelSelect() {
+      this.resetSelection();
     },
   },
   watch: {
     data: {
       handler: function (newValue, oldValue) {
+        if (this.readonly) return;
         // & Processing schedule records
         this.initRecordList(newValue);
       },
@@ -299,42 +404,78 @@ export default {
 <style lang="less" scoped>
 td {
   width: 100px;
-  height: 20px;
+  height: 10px;
   text-align: center;
   cursor: pointer;
+  line-height: 1;
+  // overflow: hidden;
 }
 .disNone {
   display: none;
 }
 .calendar-table {
-  border: 1px solid #eeeeee;
+  // border: 1px solid #eeeeee;
+  border-right: 1px solid #eeeeee;
   &__tr {
+  }
+  &__th-d {
+    border-top: 1px solid #eeeeee;
+    height: 50px;
+    background: rgba(102, 153, 204, 0.8);
+    color: #ffffff;
   }
   &__td {
     border-left: 1px solid #eeeeee;
+    font-size: 12px;
+    &.disabled {
+      background: #fafafa;
+    }
     &-top {
       border-top: 1px solid #eeeeee;
     }
+    &-bottom {
+      border-bottom: 1px solid #eeeeee;
+    }
     &-span {
-      border-top: 1px solid #eeeeee;
+      border-top: none;
       border-left: none;
       vertical-align: top;
+      position: relative;
+      .time {
+        display: block;
+        margin-top: -8px;
+        &-bottom {
+          position: absolute;
+          bottom: -8px;
+          width: 100%;
+          text-align: center;
+        }
+      }
     }
     &-null {
       border-left: none;
+      border-top: none;
+      background: unset;
     }
     &.selected-cell-span {
-      background: lightblue;
+      background: rgba(153, 204, 255, 0.3);
+      padding-top: 5px;
     }
     &-record {
-      background: pink;
+      background: rgba(153, 204, 255, 0.1);
     }
   }
   .slot-item {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    padding-top: 10px;
+    padding-top: 5px;
+  }
+  .item-default {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    // padding: 10px 5px;
   }
 }
 </style>

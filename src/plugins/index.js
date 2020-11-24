@@ -1,6 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-11-16 15:56:34
+ * @LastEditTime: 2020-11-24 10:45:38
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: /vue-calendar-week/src/plugins/index.js
+ */
+/*
+ * @Author: your name
+ * @Date: 2020-11-16 15:56:34
  * @LastEditTime: 2020-11-16 16:06:25
  * @LastEditors: Please set LastEditors
  * @Description: 组件暴露

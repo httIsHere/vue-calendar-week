@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-11-20 16:36:08
+ * @LastEditTime: 2020-11-24 09:44:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -10,14 +10,19 @@
   <div id="app">
     <div class="container">
       <calendar
-        :unit-time="1"
+        ref="myCalendar"
         :granularity="10"
         :start-time="8"
         :end-time="22"
-        start-date="2020/11/16"
+        start-date="2020/11/23"
         :data="list"
+        :readonly="false"
         @on-selected="onSelected"
+        @on-contextmenu="onContextMenu"
       >
+      <!-- <template slot="thead"  slot-scope="slotProps">
+        <div class="slot-thead">{{slotProps.item}}</div>
+      </template> -->
         <template slot="item" slot-scope="slotProps" >
           <div class="slot-item">{{slotProps.item.time}}<br>{{slotProps.item.content}}</div>
         </template>
@@ -36,21 +41,21 @@ export default {
       list: [
         {
           id: 0,
-          date: "2020/11/19",
+          date: "2020/11/29",
           start_time: "10:20",
           end_time: "11:10",
           content: "上课呢",
         },
         {
           id: 1,
-          date: "2020/11/17",
+          date: "2020/11/27",
           start_time: "10:50",
           end_time: "11:30",
           content: "上课呢",
         },
         {
           id: 2,
-          date: "2020/11/22",
+          date: "2020/11/25",
           start_time: "14:30",
           end_time: "15:50",
           content: "上课呢",
@@ -60,7 +65,10 @@ export default {
   },
   methods: {
     onSelected() {
-      // alert('success');
+      alert('success');
+    },
+    onContextMenu(row, data, event) {
+      console.log(row, data, event);
     },
   },
 };
@@ -81,23 +89,8 @@ body {
   color: #2c3e50;
   margin-top: 60px;
 }
-
-h1,
-h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+.slot-thead {
+  height: 50px;
+  line-height: 50px;
 }
 </style>
