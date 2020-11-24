@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 14:27:34
- * @LastEditTime: 2020-11-24 10:46:53
+ * @LastEditTime: 2020-11-24 15:17:10
  * @LastEditors: Please set LastEditors
  * @Description: README
  * @FilePath: /vue-calendar-week/README.md
@@ -13,19 +13,48 @@
 
 为用户提供周日历日程表设计，用户可通过自由拖动选区建立日程事件。
 
+## 使用
+
+```bash
+npm install vue-calendar-by-week
+// 或者
+yarn add vue-calendar-by-week
+```
+
+```js
+// vue项目入口文件main.js内
+import WeekCalendar from "vue-calendar-by-week";
+Vue.use(WeekCalendar);
+```
+
+```html
+<!-- 需要引入日程表的地方 -->
+<WeekCalendar
+  ref="myCalendar"
+  :granularity="10"
+  :start-time="8"
+  :end-time="22"
+  start-date="2020/11/23"
+  :data="list"
+  :readonly="false"
+  @on-selected="onSelected"
+  @on-contextmenu="onContextMenu"
+/>
+```
+
 ### Calendar props
 
-|     属性      | 说明                                                                                        |     类型      |        默认值        |
-| :-----------: | :------------------------------------------------------------------------------------------ | :-----------: | :------------------: |
-|  granularity  | 单位时间间隔颗粒度，需要可平分 1 个小时，如：10，30，15 等                                  | Number/String |          30          |
-|     data      | 显示的结构化数据，表示日程表记录，具体格式见后文                                            |     Array     |          []          |
-|  start-date   | 必填，开始日期，本日程表目前以周为单位进行设计，展示该日期往后一周的日历                    |    String     |          -           |
-|   unit-time   | 日程表单位时间，整数，以小时为单位                                                          | Number/String |          1           |
-|  start-time   | 日程表单位开始时间，目前仅支持整点，24 小时制                                               | Number/String |          0           |
-|   end-time    | 日程表单位结束时间，目前仅支持整点，24 小时制                                               | Number/String |          24          |
-|   readonly    | 日程表表格操作状态，为 true 时仅作展示使用                                                  |    Boolean    |         true         |
-| disabled-time | 设置不可选择的时间段，函数，参数为当前时间段，需要返回 Boolean 是否禁用该时间段，具体见后文 |   Function    | 小于当前时间均不可选 |
-| need-bottom-time | 底部结束时间 | Boolean | false |
+|       属性       | 说明                                                                                        |     类型      |        默认值        |
+| :--------------: | :------------------------------------------------------------------------------------------ | :-----------: | :------------------: |
+|   granularity    | 单位时间间隔颗粒度，需要可平分 1 个小时，如：10，30，15 等                                  | Number/String |          30          |
+|       data       | 显示的结构化数据，表示日程表记录，具体格式见后文                                            |     Array     |          []          |
+|    start-date    | 必填，开始日期，本日程表目前以周为单位进行设计，展示该日期往后一周的日历                    |    String     |          -           |
+|    unit-time     | 日程表单位时间，整数，以小时为单位                                                          | Number/String |          1           |
+|    start-time    | 日程表单位开始时间，目前仅支持整点，24 小时制                                               | Number/String |          0           |
+|     end-time     | 日程表单位结束时间，目前仅支持整点，24 小时制                                               | Number/String |          24          |
+|     readonly     | 日程表表格操作状态，为 true 时仅作展示使用                                                  |    Boolean    |         true         |
+|  disabled-time   | 设置不可选择的时间段，函数，参数为当前时间段，需要返回 Boolean 是否禁用该时间段，具体见后文 |   Function    | 小于当前时间均不可选 |
+| need-bottom-time | 底部结束时间                                                                                |    Boolean    |        false         |
 
 ---
 

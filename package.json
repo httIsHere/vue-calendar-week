@@ -1,8 +1,8 @@
 {
-  "name": "vue-calendar-week",
+  "name": "vue-calendar-by-week",
   "description": "为用户提供周日历日程表设计，用户可通过自由拖动选区建立日程事件",
   "version": "1.0.1",
-  "author": "httishere <18457730959@163.com>",
+  "author": "httishere <httishere0728@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -12,11 +12,11 @@
   "main": "dist/week-calendar.min.js",
   "keywords": [
     "week-calendar",
+    "calendar-by-week",
     "components"
   ],
   "files": [
-    "dist",
-    "src/plugins"
+    "dist"
   ],
   "bugs": {
     "url": "https://github.com/httIsHere/vue-calendar-week/issues"
