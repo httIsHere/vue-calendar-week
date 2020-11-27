@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-27 14:57:55
+ * @LastEditTime: 2020-11-27 15:48:04
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -48,7 +48,7 @@
             data_list[index][r] &&
             data_list[index][r].has_record &&
             data_list[index][r].start_row === r
-              ? 'calendar-table__td-record'
+              ? `calendar-table__td-record calendar-table__td-record-${data_list[index][r].over_rows}`
               : '',
             is_rowspan &&
             select_cells.col === index &&
