@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 14:27:34
- * @LastEditTime: 2020-11-25 17:41:21
+ * @LastEditTime: 2020-11-27 16:02:38
  * @LastEditors: Please set LastEditors
  * @Description: README
  * @FilePath: /vue-calendar-week/README.md
@@ -83,6 +83,17 @@ Vue.use(WeekCalendar);
 |    thead    | 日历表格头部内容             | `item`，对象格式，`{date:'日期',day:'周几'}` |
 |    item     | 日程项，可自定义设置日程内容 | `item`，日程条目，具体见下文`data`           |
 | contextMenu | 右键菜单                     |
+
+如：
+
+```html
+<!-- item -->
+<template slot="item" slot-scope="slotProps">
+  <div class="slot-item">
+    {{slotProps.item.time}}<br />{{slotProps.item.content}}
+  </div>
+</template>
+```
 
 #### data
 

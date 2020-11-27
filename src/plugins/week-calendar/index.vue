@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-27 15:48:04
+ * @LastEditTime: 2020-11-27 16:13:35
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -251,6 +251,7 @@ export default {
     },
   },
   mounted() {
+    this.initTableArray();
     this.initRecordList(this.data);
   },
   methods: {
@@ -357,10 +358,9 @@ export default {
       }
     },
     // ^ Initialize the record list
-    initRecordList(list) {
+    initTableArray() {
       const _this = this;
-      let _arr = [],
-        data_list = new Array();
+      let data_list = new Array();
       for (let i in _this.columns) {
         data_list[i] = new Array();
         for (let j = 0; j < _this.rows.length; j++) {
@@ -375,6 +375,13 @@ export default {
           };
         }
       }
+      _this.data_list = data_list;
+    },
+    initRecordList(list) {
+      const _this = this;
+      let _arr = [];
+      let data_list = JSON.parse(JSON.stringify(_this.data_list));
+      console.log(data_list);
       list.forEach((item) => {
         let date = item.date.replace(new RegExp("-", "gm"), "/");
         let date_col = _this.columns.findIndex(col => col.date === date);
