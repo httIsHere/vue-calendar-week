@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-11-24 10:52:43
+ * @LastEditTime: 2020-11-27 14:58:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/webpack.config.js
@@ -11,6 +11,7 @@ var webpack = require("webpack");
 
 module.exports = {
   entry: "./src/plugins/index.js",
+  // entry: "./src/main.js",
   output: {
     path: path.resolve(__dirname, "./dist"),
     publicPath: "/dist/",

@@ -1,13 +1,13 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 14:27:34
- * @LastEditTime: 2020-11-24 15:17:10
+ * @LastEditTime: 2020-11-25 17:41:21
  * @LastEditors: Please set LastEditors
  * @Description: README
  * @FilePath: /vue-calendar-week/README.md
 -->
 
-# vue-calendar-week
+# vue-calendar-by-week
 
 > A Vue.js Component
 
@@ -55,6 +55,7 @@ Vue.use(WeekCalendar);
 |     readonly     | 日程表表格操作状态，为 true 时仅作展示使用                                                  |    Boolean    |         true         |
 |  disabled-time   | 设置不可选择的时间段，函数，参数为当前时间段，需要返回 Boolean 是否禁用该时间段，具体见后文 |   Function    | 小于当前时间均不可选 |
 | need-bottom-time | 底部结束时间                                                                                |    Boolean    |        false         |
+|    has-header    | 是否显示表格头部                                                                            |    Boolean    |         true         |
 
 ---
 

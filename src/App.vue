@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-11-24 09:44:39
+ * @LastEditTime: 2020-11-27 14:56:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -64,8 +64,9 @@ export default {
     };
   },
   methods: {
-    onSelected() {
-      alert('success');
+    onSelected(data) {
+      console.log(data);
+      // alert('success');
     },
     onContextMenu(row, data, event) {
       console.log(row, data, event);

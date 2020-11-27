@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-24 10:43:09
+ * @LastEditTime: 2020-11-27 14:57:55
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -9,7 +9,7 @@
 <template>
   <div class="component-box component-calendar" onselectstart="return false">
     <table class="calendar-table" cellspacing="0" cellpadding="0">
-      <tr class="calendar-table__tr calendar-table__th">
+      <tr class="calendar-table__tr calendar-table__th" v-if="hasHeader">
         <td
           class="calendar-table__td calendar-table__th-d calendar-table__td-null"
         ></td>
@@ -168,6 +168,19 @@ export default {
     needBottomTime: {
       type: Boolean,
       default: false,
+    }, // 是否需要底部结束时间
+    toastMessage: {
+      type: Object,
+      default() {
+        return {
+          disabledTime: '该时间段不可安排日程',
+          timeConflict: '存在时间冲突，请重新安排'
+        } 
+      }
+    },
+    hasHeader: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -178,6 +191,8 @@ export default {
       is_rowspan: false,
       data_list: null,
       week_day: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+      click_start: null,
+      click_end: null,
     };
   },
   filters: {
@@ -252,7 +267,7 @@ export default {
         (this.data_list[col][row].has_record ||
           this.data_list[col][row].is_passed)
       ) {
-        return;
+        return this.$toast(this.toastMessage.disabledTime);
       }
       // TODO: Is it currently selected
       if (
@@ -266,6 +281,7 @@ export default {
       if (this.is_mousedown) {
         // cancel selected
       } else {
+        this.click_start = new Date().getTime();
         this.is_mousedown = true;
         this.select_cells = {
           col,
@@ -277,7 +293,10 @@ export default {
     onTableMouseOver(e, row, col) {
       if (!this.is_mousedown) return;
       if (this.data_list[col][row] && this.data_list[col][row].has_record) {
-        this.$toast("存在时间冲突，请重新安排");
+        this.$toast(this.toastMessage.timeConflict);
+        return this.resetSelection();
+      } else if(this.data_list[col][row] && this.data_list[col][row].is_passed) {
+        this.$toast(this.toastMessage.disabledTime);
         return this.resetSelection();
       }
       if (this.is_mousedown && this.select_cells.col === col) {
@@ -292,6 +311,8 @@ export default {
         let over_rows = row - this.select_cells.start_row;
         // & Click a grid to select a time unit by default
         if (over_rows === 0) {
+          this.click_end = new Date().getTime();
+          if(this.click_end - this.click_start > 300) return;
           let start_row = Math.floor(row / this.unitNum) * this.unitNum;
           over_rows = this.unitNum - 1;
           // ^ Determine whether there is a schedule in this range
@@ -299,7 +320,7 @@ export default {
           for (let i = start_row; i <= start_row + over_rows; i++) {
             if (this.data_list[col][i] && this.data_list[col][i].has_record) {
               flag = true;
-              this.$toast("存在时间冲突，请重新安排");
+              this.$toast(this.toastMessage.timeConflict);
               this.resetSelection();
               break;
             } else if (
@@ -307,7 +328,7 @@ export default {
               this.data_list[col][i].is_passed
             ) {
               flag = true;
-              this.$toast("该时间段不可安排日程，请重新安排");
+              this.$toast(this.toastMessage.disabledTime);
               this.resetSelection();
               break;
             }
@@ -325,7 +346,7 @@ export default {
         this.is_mousedown = false;
         // ! Merges cells
         this.is_rowspan = true;
-        this.$emit("on-selected");
+        this.onSelected();
       }
     },
     // Right-click the cell
@@ -388,6 +409,16 @@ export default {
     cancelSelect() {
       this.resetSelection();
     },
+    onSelected() {
+        let d = this.columns[this.select_cells.col].date;
+        let s = this.select_period.split("-")[0];
+        let e = this.select_period.split("-")[1];
+        this.$emit("on-selected", {
+          date: d,
+          start_time: s,
+          end_time: e
+        });
+    }
   },
   watch: {
     data: {
@@ -404,7 +435,7 @@ export default {
 <style lang="less" scoped>
 td {
   width: 100px;
-  height: 10px;
+  height: 20px;
   text-align: center;
   cursor: pointer;
   line-height: 1;
@@ -460,6 +491,7 @@ td {
     &.selected-cell-span {
       background: rgba(153, 204, 255, 0.3);
       padding-top: 5px;
+      box-sizing: border-box;
     }
     &-record {
       background: rgba(153, 204, 255, 0.1);
