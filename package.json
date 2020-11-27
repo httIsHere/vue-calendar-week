@@ -1,7 +1,7 @@
 {
   "name": "vue-calendar-by-week",
   "description": "为用户提供周日历日程表设计，用户可通过自由拖动选区建立日程事件",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "httishere <httishere0728@gmail.com>",
   "license": "MIT",
   "private": false,
