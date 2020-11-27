@@ -268,7 +268,7 @@ export default {
         (this.data_list[col][row].has_record ||
           this.data_list[col][row].is_passed)
       ) {
-        return this.$toast(this.toastMessage.disabledTime);
+        return this.$emit('on-error', this.toastMessage.disabledTime);
       }
       // TODO: Is it currently selected
       if (
@@ -294,10 +294,10 @@ export default {
     onTableMouseOver(e, row, col) {
       if (!this.is_mousedown) return;
       if (this.data_list[col][row] && this.data_list[col][row].has_record) {
-        this.$toast(this.toastMessage.timeConflict);
+        this.$emit('on-error', this.toastMessage.timeConflict);
         return this.resetSelection();
       } else if(this.data_list[col][row] && this.data_list[col][row].is_passed) {
-        this.$toast(this.toastMessage.disabledTime);
+        this.$emit('on-error', this.toastMessage.disabledTime);
         return this.resetSelection();
       }
       if (this.is_mousedown && this.select_cells.col === col) {
@@ -321,7 +321,7 @@ export default {
           for (let i = start_row; i <= start_row + over_rows; i++) {
             if (this.data_list[col][i] && this.data_list[col][i].has_record) {
               flag = true;
-              this.$toast(this.toastMessage.timeConflict);
+              this.$emit('on-error', this.toastMessage.timeConflict);
               this.resetSelection();
               break;
             } else if (
@@ -329,7 +329,7 @@ export default {
               this.data_list[col][i].is_passed
             ) {
               flag = true;
-              this.$toast(this.toastMessage.disabledTime);
+              this.$emit('on-error', this.toastMessage.disabledTime);
               this.resetSelection();
               break;
             }

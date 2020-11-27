@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 14:27:34
- * @LastEditTime: 2020-11-27 16:02:38
+ * @LastEditTime: 2020-11-27 16:59:32
  * @LastEditors: Please set LastEditors
  * @Description: README
  * @FilePath: /vue-calendar-week/README.md
@@ -65,6 +65,7 @@ Vue.use(WeekCalendar);
 | :------------: | :----------------------------- | :----------------------------------------------- |
 |  on-selected   | 拖动选取时间段单元格完成时触发 | `object`，选中的资源对象，内容包括时间段和日期等 |
 | on-contextmenu | 日程记录右击事件               | `row`，`record`，`event`                         |
+|    on-error    | 日程表格错误反馈               | msg                                              |
 
 ---
 
