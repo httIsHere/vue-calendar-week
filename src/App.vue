@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-11-27 16:18:54
+ * @LastEditTime: 2020-11-27 17:09:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -24,7 +24,7 @@
         <div class="slot-thead">{{slotProps.item}}</div>
       </template> -->
         <template slot="item" slot-scope="slotProps" >
-          <div class="slot-item">{{slotProps.item.time}}<br>{{slotProps.item.content}}</div>
+          <div class="slot-item">{{slotProps.item}}</div>
         </template>
       </calendar>
     </div>

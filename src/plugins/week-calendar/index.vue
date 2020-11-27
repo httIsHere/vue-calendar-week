@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-27 16:50:12
+ * @LastEditTime: 2020-11-27 17:16:55
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -404,8 +404,7 @@ export default {
           time: `${item.start_time}-${item.end_time}`,
         };
         _arr.push(record_item);
-        data_list[date_col][start_row] = Object.assign(data_list[date_col][start_row], record_item);
-        // console.log(data_list[date_col][start_row])
+        data_list[date_col][start_row] = Object.assign(data_list[date_col][start_row], record_item, item);
         for (let j = start_row + 1; j < start_row + over_rows; j++) {
           data_list[date_col][j].has_record = true;
         }
