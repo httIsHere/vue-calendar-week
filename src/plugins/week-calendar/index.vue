@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-27 17:16:55
+ * @LastEditTime: 2020-11-30 15:47:16
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -97,7 +97,7 @@
             {{ select_period }}
           </div>
           <!-- Schedule main content -->
-          <template
+          <div class="slot-item"
             v-if="
               data_list &&
               data_list[index][r] &&
@@ -112,7 +112,7 @@
                 }}
               </div>
             </slot>
-          </template>
+          </div>
         </td>
       </tr>
     </table>
@@ -379,6 +379,7 @@ export default {
     },
     initRecordList(list) {
       const _this = this;
+      _this.cancelSelect();
       let _arr = [];
       let data_list = JSON.parse(JSON.stringify(_this.data_list));
       list.forEach((item) => {
