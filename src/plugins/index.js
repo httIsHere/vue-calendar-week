@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-11-16 15:56:34
- * @LastEditTime: 2020-11-24 10:45:38
- * @LastEditors: your name
+ * @LastEditTime: 2020-11-30 16:08:28
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/plugins/index.js
  */
@@ -19,7 +19,7 @@ import Calendar from './week-calendar/index.vue';
 
 const components = { // use 'install' function to install components
     install(Vue) {
-        Vue.component('WeekCalendar', Calendar);
+        Vue.component('CalendarByWeek', Calendar);
     }
 }
 

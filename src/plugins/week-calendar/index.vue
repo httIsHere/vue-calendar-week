@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-30 15:47:16
+ * @LastEditTime: 2020-11-30 16:06:21
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -121,6 +121,7 @@
 <script>
 import util from "../../util";
 export default {
+  name: 'CalendarByWeek',
   props: {
     granularity: {
       type: [String, Number],
