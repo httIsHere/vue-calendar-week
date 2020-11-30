@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-30 16:06:21
+ * @LastEditTime: 2020-11-30 16:48:17
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -105,7 +105,7 @@
               data_list[index][r].start_row === r
             "
           >
-            <slot name="item" :item="data_list[index][r]">
+            <slot :item="data_list[index][r]">
               <div class="slot-item">
                 {{ data_list[index][r].time }}<br />{{
                   data_list[index][r].content

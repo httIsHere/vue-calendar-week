@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 14:27:34
- * @LastEditTime: 2020-11-27 16:59:32
+ * @LastEditTime: 2020-11-30 16:27:35
  * @LastEditors: Please set LastEditors
  * @Description: README
  * @FilePath: /vue-calendar-week/README.md
@@ -23,13 +23,13 @@ yarn add vue-calendar-by-week
 
 ```js
 // vue项目入口文件main.js内
-import WeekCalendar from "vue-calendar-by-week";
-Vue.use(WeekCalendar);
+import CalendarByWeek from "vue-calendar-by-week";
+Vue.use(CalendarByWeek);
 ```
 
 ```html
 <!-- 需要引入日程表的地方 -->
-<WeekCalendar
+<CalendarByWeek
   ref="myCalendar"
   :granularity="10"
   :start-time="8"
@@ -118,7 +118,7 @@ Vue.use(WeekCalendar);
 
 ```js
 <template>
-    <Calendar disabled-time="disabledTime" />
+    <CalendarByWeek disabled-time="disabledTime" />
 </template>
 <script>
 export default {
