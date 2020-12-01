@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-01 18:21:31
+ * @LastEditTime: 2020-12-01 19:04:12
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -394,38 +394,40 @@ export default {
       let _arr = [];
       this.initTableArray();
       let data_list = JSON.parse(JSON.stringify(_this.data_list));
-      list.forEach((item) => {
-        let date = item.date.replace(new RegExp("-", "gm"), "/");
-        let date_col = _this.columns.findIndex((col) => col.date === date);
-        if (date_col < 0) return;
-        let start_time =
-          parseInt(item.start_time.split(":")[0]) * 60 +
-          parseInt(item.start_time.split(":")[1]);
-        let end_time =
-          parseInt(item.end_time.split(":")[0]) * 60 +
-          parseInt(item.end_time.split(":")[1]);
-        let start_row =
-          (start_time - parseInt(_this.startTime) * 60) / _this.granularity;
-        let over_rows = (end_time - start_time) / _this.granularity;
-        let record_item = {
-          has_record: true,
-          is_before_created: true, // The generated schedule record, not added this time
-          date_col,
-          start_row,
-          over_rows,
-          content: item.content,
-          time: `${item.start_time}-${item.end_time}`,
-        };
-        _arr.push(record_item);
-        data_list[date_col][start_row] = Object.assign(
-          data_list[date_col][start_row],
-          record_item,
-          item
-        );
-        for (let j = start_row + 1; j < start_row + over_rows; j++) {
-          data_list[date_col][j].has_record = true;
-        }
-      });
+      if (list) {
+        list.forEach((item) => {
+          let date = item.date.replace(new RegExp("-", "gm"), "/");
+          let date_col = _this.columns.findIndex((col) => col.date === date);
+          if (date_col < 0) return;
+          let start_time =
+            parseInt(item.start_time.split(":")[0]) * 60 +
+            parseInt(item.start_time.split(":")[1]);
+          let end_time =
+            parseInt(item.end_time.split(":")[0]) * 60 +
+            parseInt(item.end_time.split(":")[1]);
+          let start_row =
+            (start_time - parseInt(_this.startTime) * 60) / _this.granularity;
+          let over_rows = (end_time - start_time) / _this.granularity;
+          let record_item = {
+            has_record: true,
+            is_before_created: true, // The generated schedule record, not added this time
+            date_col,
+            start_row,
+            over_rows,
+            content: item.content,
+            time: `${item.start_time}-${item.end_time}`,
+          };
+          _arr.push(record_item);
+          data_list[date_col][start_row] = Object.assign(
+            data_list[date_col][start_row],
+            record_item,
+            item
+          );
+          for (let j = start_row + 1; j < start_row + over_rows; j++) {
+            data_list[date_col][j].has_record = true;
+          }
+        });
+      }
       _this.data_list = data_list;
     },
     // * Clear the current options and expose outward
