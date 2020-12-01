@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-11-27 17:09:07
+ * @LastEditTime: 2020-12-01 18:17:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -23,7 +23,7 @@
       <!-- <template slot="thead"  slot-scope="slotProps">
         <div class="slot-thead">{{slotProps.item}}</div>
       </template> -->
-        <template slot="item" slot-scope="slotProps" >
+        <template slot-scope="slotProps" >
           <div class="slot-item">{{slotProps.item}}</div>
         </template>
       </calendar>
@@ -52,7 +52,10 @@ export default {
           start_time: "10:20",
           end_time: "11:10",
           content: "上课呢",
-        })
+        });
+        setTimeout(function() {
+          _this.list = [];
+        }, 3000)
     }, 2000)
   },
   methods: {

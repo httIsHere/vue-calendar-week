@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-01 11:18:36
+ * @LastEditTime: 2020-12-01 18:21:31
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -392,6 +392,7 @@ export default {
       const _this = this;
       _this.cancelSelect();
       let _arr = [];
+      this.initTableArray();
       let data_list = JSON.parse(JSON.stringify(_this.data_list));
       list.forEach((item) => {
         let date = item.date.replace(new RegExp("-", "gm"), "/");
@@ -432,6 +433,7 @@ export default {
       this.resetSelection();
     },
     onSelected() {
+      if (this.readonly) return;
       let d = this.columns[this.select_cells.col].date;
       let s = this.select_period.split("-")[0];
       let e = this.select_period.split("-")[1];
@@ -445,7 +447,6 @@ export default {
   watch: {
     data: {
       handler: function (newValue, oldValue) {
-        if (this.readonly) return;
         // & Processing schedule records
         this.initRecordList(newValue);
       },
