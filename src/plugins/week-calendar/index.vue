@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-11-30 16:48:17
+ * @LastEditTime: 2020-12-01 11:18:36
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -30,9 +30,11 @@
             :rowspan="unitNum"
           >
             <span class="time">{{ rows[r] }}</span>
-            <span class="time time-bottom" v-if="needBottomTime && r === rows.length - unitNum">{{
-              endTime | formatHourWithInt
-            }}</span>
+            <span
+              class="time time-bottom"
+              v-if="needBottomTime && r === rows.length - unitNum"
+              >{{ endTime | formatHourWithInt }}</span
+            >
           </td>
         </template>
         <!-- main -->
@@ -97,7 +99,7 @@
             {{ select_period }}
           </div>
           <!-- Schedule main content -->
-          <div class="slot-item"
+          <template
             v-if="
               data_list &&
               data_list[index][r] &&
@@ -105,14 +107,12 @@
               data_list[index][r].start_row === r
             "
           >
-            <slot :item="data_list[index][r]">
-              <div class="slot-item">
-                {{ data_list[index][r].time }}<br />{{
-                  data_list[index][r].content
-                }}
-              </div>
-            </slot>
-          </div>
+            <calendar-slot :item="data_list[index][r]">
+              {{ data_list[index][r].time }}<br />{{
+                data_list[index][r].content
+              }}
+            </calendar-slot>
+          </template>
         </td>
       </tr>
     </table>
@@ -120,8 +120,9 @@
 </template>
 <script>
 import util from "../../util";
+import CalendarSlot from "./slot";
 export default {
-  name: 'CalendarByWeek',
+  name: "CalendarByWeek",
   props: {
     granularity: {
       type: [String, Number],
@@ -174,15 +175,21 @@ export default {
       type: Object,
       default() {
         return {
-          disabledTime: '该时间段不可安排日程',
-          timeConflict: '存在时间冲突，请重新安排'
-        } 
-      }
+          disabledTime: "该时间段不可安排日程",
+          timeConflict: "存在时间冲突，请重新安排",
+        };
+      },
     },
     hasHeader: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+  },
+  components: { CalendarSlot },
+  provide() {
+    return {
+      calendarRoot: this,
+    };
   },
   data() {
     return {
@@ -269,7 +276,7 @@ export default {
         (this.data_list[col][row].has_record ||
           this.data_list[col][row].is_passed)
       ) {
-        return this.$emit('on-error', this.toastMessage.disabledTime);
+        return this.$emit("on-error", this.toastMessage.disabledTime);
       }
       // TODO: Is it currently selected
       if (
@@ -295,10 +302,13 @@ export default {
     onTableMouseOver(e, row, col) {
       if (!this.is_mousedown) return;
       if (this.data_list[col][row] && this.data_list[col][row].has_record) {
-        this.$emit('on-error', this.toastMessage.timeConflict);
+        this.$emit("on-error", this.toastMessage.timeConflict);
         return this.resetSelection();
-      } else if(this.data_list[col][row] && this.data_list[col][row].is_passed) {
-        this.$emit('on-error', this.toastMessage.disabledTime);
+      } else if (
+        this.data_list[col][row] &&
+        this.data_list[col][row].is_passed
+      ) {
+        this.$emit("on-error", this.toastMessage.disabledTime);
         return this.resetSelection();
       }
       if (this.is_mousedown && this.select_cells.col === col) {
@@ -314,7 +324,7 @@ export default {
         // & Click a grid to select a time unit by default
         if (over_rows === 0) {
           this.click_end = new Date().getTime();
-          if(this.click_end - this.click_start > 300) return;
+          if (this.click_end - this.click_start > 300) return;
           let start_row = Math.floor(row / this.unitNum) * this.unitNum;
           over_rows = this.unitNum - 1;
           // ^ Determine whether there is a schedule in this range
@@ -322,7 +332,7 @@ export default {
           for (let i = start_row; i <= start_row + over_rows; i++) {
             if (this.data_list[col][i] && this.data_list[col][i].has_record) {
               flag = true;
-              this.$emit('on-error', this.toastMessage.timeConflict);
+              this.$emit("on-error", this.toastMessage.timeConflict);
               this.resetSelection();
               break;
             } else if (
@@ -330,7 +340,7 @@ export default {
               this.data_list[col][i].is_passed
             ) {
               flag = true;
-              this.$emit('on-error', this.toastMessage.disabledTime);
+              this.$emit("on-error", this.toastMessage.disabledTime);
               this.resetSelection();
               break;
             }
@@ -385,7 +395,7 @@ export default {
       let data_list = JSON.parse(JSON.stringify(_this.data_list));
       list.forEach((item) => {
         let date = item.date.replace(new RegExp("-", "gm"), "/");
-        let date_col = _this.columns.findIndex(col => col.date === date);
+        let date_col = _this.columns.findIndex((col) => col.date === date);
         if (date_col < 0) return;
         let start_time =
           parseInt(item.start_time.split(":")[0]) * 60 +
@@ -406,7 +416,11 @@ export default {
           time: `${item.start_time}-${item.end_time}`,
         };
         _arr.push(record_item);
-        data_list[date_col][start_row] = Object.assign(data_list[date_col][start_row], record_item, item);
+        data_list[date_col][start_row] = Object.assign(
+          data_list[date_col][start_row],
+          record_item,
+          item
+        );
         for (let j = start_row + 1; j < start_row + over_rows; j++) {
           data_list[date_col][j].has_record = true;
         }
@@ -418,15 +432,15 @@ export default {
       this.resetSelection();
     },
     onSelected() {
-        let d = this.columns[this.select_cells.col].date;
-        let s = this.select_period.split("-")[0];
-        let e = this.select_period.split("-")[1];
-        this.$emit("on-selected", {
-          date: d,
-          start_time: s,
-          end_time: e
-        });
-    }
+      let d = this.columns[this.select_cells.col].date;
+      let s = this.select_period.split("-")[0];
+      let e = this.select_period.split("-")[1];
+      this.$emit("on-selected", {
+        date: d,
+        start_time: s,
+        end_time: e,
+      });
+    },
   },
   watch: {
     data: {
