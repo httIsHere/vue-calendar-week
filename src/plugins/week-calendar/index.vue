@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-01 19:04:12
+ * @LastEditTime: 2020-12-02 11:37:55
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -397,7 +397,7 @@ export default {
       if (list) {
         list.forEach((item) => {
           let date = item.date.replace(new RegExp("-", "gm"), "/");
-          let date_col = _this.columns.findIndex((col) => col.date === date);
+          let date_col = _this.columns.findIndex((col) => new Date(col.date).getTime() === new Date(date).getTime());
           if (date_col < 0) return;
           let start_time =
             parseInt(item.start_time.split(":")[0]) * 60 +

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-12-01 18:17:37
+ * @LastEditTime: 2020-12-02 11:36:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -14,7 +14,7 @@
         :granularity="10"
         :start-time="8"
         :end-time="22"
-        start-date="2020/11/23"
+        start-date="2020/11/30"
         :data="list"
         :readonly="false"
         @on-selected="onSelected"
@@ -38,25 +38,29 @@ export default {
   components: { Calendar },
   data() {
     return {
-      list: [,
+      list: [
+        {
+          id: 0,
+          date: '2020-12-03',
+          start_time: '08:50',
+          end_time: '10:50',
+          content: '000'
+        }
       ],
     };
   },
   mounted() {
     const _this = this;
-    setTimeout(() => {
-      _this.list.push(
-        {
-          id: 0,
-          date: "2020/11/29",
-          start_time: "10:20",
-          end_time: "11:10",
-          content: "上课呢",
-        });
-        setTimeout(function() {
-          _this.list = [];
-        }, 3000)
-    }, 2000)
+    // setTimeout(() => {
+    //   _this.list.push(
+    //     {
+    //       id: 0,
+    //       date: "2020/11/29",
+    //       start_time: "10:20",
+    //       end_time: "11:10",
+    //       content: "上课呢",
+    //     });
+    // }, 2000)
   },
   methods: {
     onSelected(data) {
