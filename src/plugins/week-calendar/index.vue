@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-03 15:59:29
+ * @LastEditTime: 2020-12-03 18:09:49
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -325,10 +325,11 @@ export default {
         // & Click a grid to select a time unit by default
         if (over_rows === 0) {
           this.click_end = new Date().getTime();
-          if (this.click_end - this.click_start > 300) return;
-          let start_row = Math.floor(row / this.unitNum) * this.unitNum;
-          over_rows = this.unitNum - 1;
-          this.select_cells.start_row = start_row;
+          if (this.click_end - this.click_start < 300) {
+            let start_row = Math.floor(row / this.unitNum) * this.unitNum;
+            over_rows = this.unitNum - 1;
+            this.select_cells.start_row = start_row;
+          }
         }
         // & Select up
         if (over_rows < 0) {
