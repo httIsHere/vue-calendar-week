@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-12-02 11:36:17
+ * @LastEditTime: 2020-12-03 16:00:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -19,6 +19,7 @@
         :readonly="false"
         @on-selected="onSelected"
         @on-contextmenu="onContextMenu"
+        @on-error="onError"
       >
       <!-- <template slot="thead"  slot-scope="slotProps">
         <div class="slot-thead">{{slotProps.item}}</div>
@@ -41,7 +42,7 @@ export default {
       list: [
         {
           id: 0,
-          date: '2020-12-03',
+          date: '2020-12-06',
           start_time: '08:50',
           end_time: '10:50',
           content: '000'
@@ -70,6 +71,9 @@ export default {
     onContextMenu(row, data, event) {
       console.log(row, data, event);
     },
+    onError(msg) {
+      console.log(msg)
+    }
   },
 };
 </script>

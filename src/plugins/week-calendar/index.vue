@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-02 11:37:55
+ * @LastEditTime: 2020-12-03 15:59:29
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -321,31 +321,13 @@ export default {
     onTableMouseUp(e, row, col) {
       if (this.is_mousedown) {
         let over_rows = row - this.select_cells.start_row;
+        console.log(this.select_cells);
         // & Click a grid to select a time unit by default
         if (over_rows === 0) {
           this.click_end = new Date().getTime();
           if (this.click_end - this.click_start > 300) return;
           let start_row = Math.floor(row / this.unitNum) * this.unitNum;
           over_rows = this.unitNum - 1;
-          // ^ Determine whether there is a schedule in this range
-          let flag = false;
-          for (let i = start_row; i <= start_row + over_rows; i++) {
-            if (this.data_list[col][i] && this.data_list[col][i].has_record) {
-              flag = true;
-              this.$emit("on-error", this.toastMessage.timeConflict);
-              this.resetSelection();
-              break;
-            } else if (
-              this.data_list[col][i] &&
-              this.data_list[col][i].is_passed
-            ) {
-              flag = true;
-              this.$emit("on-error", this.toastMessage.disabledTime);
-              this.resetSelection();
-              break;
-            }
-          }
-          if (flag) return;
           this.select_cells.start_row = start_row;
         }
         // & Select up
@@ -353,6 +335,25 @@ export default {
           this.select_cells.start_row = row;
           over_rows = -over_rows;
         }
+        // ^ Determine whether there is a schedule in this range
+        let flag = false, start_row = this.select_cells.start_row;
+        for (let i = start_row; i <= start_row + over_rows; i++) {
+          if (this.data_list[col][i] && this.data_list[col][i].has_record) {
+            flag = true;
+            this.$emit("on-error", this.toastMessage.timeConflict);
+            this.resetSelection();
+            break;
+          } else if (
+            this.data_list[col][i] &&
+            this.data_list[col][i].is_passed
+          ) {
+            flag = true;
+            this.$emit("on-error", this.toastMessage.disabledTime);
+            this.resetSelection();
+            break;
+          }
+        }
+        if (flag) return;
         this.select_cells.end_row = this.select_cells.start_row + over_rows;
         this.select_cells.over_rows = over_rows;
         this.is_mousedown = false;
@@ -397,7 +398,9 @@ export default {
       if (list) {
         list.forEach((item) => {
           let date = item.date.replace(new RegExp("-", "gm"), "/");
-          let date_col = _this.columns.findIndex((col) => new Date(col.date).getTime() === new Date(date).getTime());
+          let date_col = _this.columns.findIndex(
+            (col) => new Date(col.date).getTime() === new Date(date).getTime()
+          );
           if (date_col < 0) return;
           let start_time =
             parseInt(item.start_time.split(":")[0]) * 60 +
