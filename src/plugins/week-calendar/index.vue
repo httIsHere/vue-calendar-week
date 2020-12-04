@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-03 18:09:49
+ * @LastEditTime: 2020-12-04 10:28:51
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -321,7 +321,6 @@ export default {
     onTableMouseUp(e, row, col) {
       if (this.is_mousedown) {
         let over_rows = row - this.select_cells.start_row;
-        console.log(this.select_cells);
         // & Click a grid to select a time unit by default
         if (over_rows === 0) {
           this.click_end = new Date().getTime();
@@ -447,6 +446,8 @@ export default {
         date: d,
         start_time: s,
         end_time: e,
+        start_row: this.select_cells.start_row,
+        over_rows: this.select_cells.over_rows
       });
     },
   },
