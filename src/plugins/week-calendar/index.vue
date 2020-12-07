@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-04 10:28:51
+ * @LastEditTime: 2020-12-07 10:37:14
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -43,7 +43,7 @@
             'calendar-table__td',
             r % unitNum === 0 ? 'calendar-table__td-top' : '',
             r === rows.length - 1 ? 'calendar-table__td-bottom' : '',
-            data_list && data_list[index][r] && data_list[index][r].is_passed
+            data_list && data_list[index][r] && data_list[index][r].is_disabled
               ? 'disabled'
               : '',
             data_list &&
@@ -274,7 +274,7 @@ export default {
       if (
         this.data_list[col][row] &&
         (this.data_list[col][row].has_record ||
-          this.data_list[col][row].is_passed)
+          this.data_list[col][row].is_disabled)
       ) {
         return this.$emit("on-error", this.toastMessage.disabledTime);
       }
@@ -306,7 +306,7 @@ export default {
         return this.resetSelection();
       } else if (
         this.data_list[col][row] &&
-        this.data_list[col][row].is_passed
+        this.data_list[col][row].is_disabled
       ) {
         this.$emit("on-error", this.toastMessage.disabledTime);
         return this.resetSelection();
@@ -345,7 +345,7 @@ export default {
             break;
           } else if (
             this.data_list[col][i] &&
-            this.data_list[col][i].is_passed
+            this.data_list[col][i].is_disabled
           ) {
             flag = true;
             this.$emit("on-error", this.toastMessage.disabledTime);
@@ -381,14 +381,24 @@ export default {
           let _start = util.formatTimeWithMinutes(
             parseInt(_this.startTime) * 60 + j * _this.granularity
           );
-          let is_passed = _this.disabledTime(`${_date} ${_start}`);
+          let is_passed = _this.passedTime(`${_date} ${_start}`); // passed time
+          let is_disabled = _this.disabledTime(`${_date} ${_start}`); // disabled time
           data_list[i][j] = {
             is_passed,
+            is_disabled
           };
         }
       }
       _this.data_list = data_list;
     },
+    // ^ passed time
+    passedTime(time) {
+        // * Whether the current time period is disabled
+        let currentTime = new Date().getTime();
+        let start_time = new Date(time).getTime();
+        return currentTime >= start_time;
+    },
+    // ^ main
     initRecordList(list) {
       const _this = this;
       _this.cancelSelect();
