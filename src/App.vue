@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 15:34:48
- * @LastEditTime: 2020-12-03 16:00:34
+ * @LastEditTime: 2020-12-14 14:29:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue-calendar-week/src/App.vue
@@ -14,7 +14,7 @@
         :granularity="10"
         :start-time="8"
         :end-time="22"
-        start-date="2020/11/30"
+        start-date="2020/12/14"
         :data="list"
         :readonly="false"
         @on-selected="onSelected"

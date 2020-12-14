@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 15:46:08
- * @LastEditTime: 2020-12-07 10:37:14
+ * @LastEditTime: 2020-12-14 14:29:05
  * @LastEditors: Please set LastEditors
  * @Description: a week calendar ui
  * @FilePath: /vue-calendar-week/src/plugins/calendar/Index.Vue
@@ -26,7 +26,7 @@
       <tr class="calendar-table__tr" v-for="(item, r) in rows" :key="r">
         <template v-if="r % unitNum === 0">
           <td
-            class="calendar-table__td calendar-table__td-span"
+            class="calendar-table__td calendar-table__td-span calendar-table__td-time"
             :rowspan="unitNum"
           >
             <span class="time">{{ rows[r] }}</span>
@@ -41,7 +41,7 @@
         <td
           :class="[
             'calendar-table__td',
-            r % unitNum === 0 ? 'calendar-table__td-top' : '',
+            r % unitNum === 0 && !spaceLine ? 'calendar-table__td-top' : '',
             r === rows.length - 1 ? 'calendar-table__td-bottom' : '',
             data_list && data_list[index][r] && data_list[index][r].is_disabled
               ? 'disabled'
@@ -72,6 +72,7 @@
               ? 'selected-cell-span'
               : '',
           ]"
+          :style="{'border-bottom': spaceLine?`${spaceLine}px solid #eeeeee`:'unset'}"
           :rowspan="
             is_rowspan &&
             select_cells.col === index &&
@@ -183,6 +184,10 @@ export default {
     hasHeader: {
       type: Boolean,
       default: true,
+    },
+    spaceLine: {
+      type: Number,
+      default: 0,
     },
   },
   components: { CalendarSlot },
@@ -336,7 +341,8 @@ export default {
           over_rows = -over_rows;
         }
         // ^ Determine whether there is a schedule in this range
-        let flag = false, start_row = this.select_cells.start_row;
+        let flag = false,
+          start_row = this.select_cells.start_row;
         for (let i = start_row; i <= start_row + over_rows; i++) {
           if (this.data_list[col][i] && this.data_list[col][i].has_record) {
             flag = true;
@@ -385,7 +391,7 @@ export default {
           let is_disabled = _this.disabledTime(`${_date} ${_start}`); // disabled time
           data_list[i][j] = {
             is_passed,
-            is_disabled
+            is_disabled,
           };
         }
       }
@@ -393,10 +399,10 @@ export default {
     },
     // ^ passed time
     passedTime(time) {
-        // * Whether the current time period is disabled
-        let currentTime = new Date().getTime();
-        let start_time = new Date(time).getTime();
-        return currentTime >= start_time;
+      // * Whether the current time period is disabled
+      let currentTime = new Date().getTime();
+      let start_time = new Date(time).getTime();
+      return currentTime >= start_time;
     },
     // ^ main
     initRecordList(list) {
@@ -457,7 +463,7 @@ export default {
         start_time: s,
         end_time: e,
         start_row: this.select_cells.start_row,
-        over_rows: this.select_cells.over_rows
+        over_rows: this.select_cells.over_rows,
       });
     },
   },
@@ -473,8 +479,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-td {
-  width: 100px;
+.component-calendar {
+  width: 100%;
+}
+.calendar-table__td {
+  width: calc(~"100% / 8");
   height: 20px;
   text-align: center;
   cursor: pointer;
@@ -485,11 +494,14 @@ td {
   display: none;
 }
 .calendar-table {
+  width: 100%;
   // border: 1px solid #eeeeee;
   border-right: 1px solid #eeeeee;
   &__tr {
+    width: 100%;
   }
   &__th-d {
+    border: none;
     border-top: 1px solid #eeeeee;
     height: 50px;
     background: rgba(102, 153, 204, 0.8);
@@ -506,6 +518,9 @@ td {
     }
     &-bottom {
       border-bottom: 1px solid #eeeeee;
+    }
+    &-time {
+      border: none;
     }
     &-span {
       border-top: none;

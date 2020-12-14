@@ -1,7 +1,7 @@
 <!--
  * @Author: httishere
  * @Date: 2020-11-16 14:27:34
- * @LastEditTime: 2020-11-30 16:27:35
+ * @LastEditTime: 2020-12-14 14:32:41
  * @LastEditors: Please set LastEditors
  * @Description: README
  * @FilePath: /vue-calendar-week/README.md
@@ -9,9 +9,8 @@
 
 # vue-calendar-by-week
 
-> A Vue.js Component
+> 为用户提供周日历日程表设计，用户可通过自由拖动选区建立日程事件。
 
-为用户提供周日历日程表设计，用户可通过自由拖动选区建立日程事件。
 
 ## 使用
 
@@ -56,6 +55,7 @@ Vue.use(CalendarByWeek);
 |  disabled-time   | 设置不可选择的时间段，函数，参数为当前时间段，需要返回 Boolean 是否禁用该时间段，具体见后文 |   Function    | 小于当前时间均不可选 |
 | need-bottom-time | 底部结束时间                                                                                |    Boolean    |        false         |
 |    has-header    | 是否显示表格头部                                                                            |    Boolean    |         true         |
+|    space-line    | 单元格间隙横线粗细X（表示Xpx solid #eeeeee）                                                                              |    Number     |    0     |
 
 ---
 
